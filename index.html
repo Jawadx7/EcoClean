@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Management - Report Illegal Waste Dumps</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav id="main-nav">
+            <div class="logo">EcoClean</div>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#report-form">Report</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section">
+            <div class="hero-content">
+                <h1>Help Keep Our Environment Clean—Report Illegal Waste Dumps Today!</h1>
+                <p>Join our mission to create cleaner, healthier communities by reporting illegal waste dumps in your area.</p>
+                <a href="#report-form" class="cta-button">Report Waste Dump</a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2>About Our Mission</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>At EcoClean, we are dedicated to preserving our environment through effective waste management and recycling initiatives. Our team works tirelessly to collect, process, and recycle waste to minimize environmental impact and create a sustainable future.</p>
+                        <p>We believe that everyone has a role to play in keeping our communities clean. By reporting illegal waste dumps, you help us identify problem areas quickly and take immediate action to restore these spaces to their natural beauty.</p>
+                    </div>
+                    <div class="about-image">
+                        <!-- Placeholder for an image -->
+                        <div class="image-placeholder"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="how-it-works-section">
+            <div class="container">
+                <h2>How It Works</h2>
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Spot an inappropriate waste dump</h3>
+                        <p>Identify illegal waste dumps in your community or natural areas.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Visit our website</h3>
+                        <p>Navigate to our report page to begin the reporting process.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Fill in details</h3>
+                        <p>Provide location, type of waste, and upload an image if possible.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Our team schedules a cleanup</h3>
+                        <p>We'll review your report and dispatch a team to clean up the area.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Report Form Section -->
+        <section id="report-form" class="report-form-section">
+            <div class="container">
+                <h2>Report a Waste Dump</h2>
+                <form id="waste-report-form">
+                    <div class="form-group">
+                        <label for="location">Location (Address) *</label>
+                        <div class="location-input-group">
+                            <input type="text" id="location" name="location" required>
+                            <button type="button" id="gps-button" class="gps-button">Get GPS Location</button>
+                        </div>
+                        <span class="error-message" id="location-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" rows="4" required></textarea>
+                        <span class="error-message" id="description-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Type of Waste *</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="waste-type" value="Plastic"> Plastic
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="waste-type" value="Metal"> Metal
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="waste-type" value="Wood"> Wood
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="waste-type" value="Organic"> Organic
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="waste-type" value="Mixed"> Mixed
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="waste-type" value="Hazardous"> Hazardous (e.g., chemicals, batteries, medical waste)
+                            </label>
+                        </div>
+                        <span class="error-message" id="waste-type-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image-upload">Image Upload * (Min 1, Max 3)</label>
+                        <input type="file" id="image-upload" name="image-upload" accept=".jpg,.jpeg,.png,.webp" multiple>
+                        <div class="file-types-info">Allowed file types: .jpg, .jpeg, .png, .webp</div>
+                        <div id="image-preview-container" class="image-preview-container"></div>
+                        <span class="error-message" id="image-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Urgency Level *</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="urgency" value="Low" required> Low (Not urgent)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="urgency" value="Medium"> Medium (Needs attention soon)
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="urgency" value="High"> High (Health/environmental hazard, needs urgent action)
+                            </label>
+                        </div>
+                        <span class="error-message" id="urgency-error"></span>
+                    </div>
+                    
+                    <div class="form-group" id="anonymous-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="anonymous" name="anonymous"> Report Anonymously
+                        </label>
+                        <div class="info-text">If checked, your contact information will not be shared.</div>
+                    </div>
+                    
+                    <div id="contact-fields">
+                        <div class="form-group">
+                            <label for="contact">Contact Information (Email or Phone) *</label>
+                            <input type="text" id="contact" name="contact" required>
+                            <span class="error-message" id="contact-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Preferred Contact Method (Optional)</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="contact-method" value="Email"> Email
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="contact-method" value="Phone"> Phone
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="contact-method" value="None"> No contact needed
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-button">Submit Report</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Contact Section -->
+    <footer id="contact" class="contact-section">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <p><strong>Address:</strong> 123 Green Street, Eco City, EC 12345</p>
+                    <p><strong>Email:</strong> info@ecoclean.com</p>
+                    <p><strong>Phone:</strong> (555) 123-4567</p>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="social-icon">Facebook</a>
+                    <a href="#" class="social-icon">Twitter</a>
+                    <a href="#" class="social-icon">Instagram</a>
+                    <a href="#" class="social-icon">LinkedIn</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 EcoClean Waste Management. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
