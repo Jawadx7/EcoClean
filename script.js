@@ -107,10 +107,10 @@ document.addEventListener("DOMContentLoaded", function () {
           .addEventListener("click", function () {
             imageDiv.remove();
             uploadedImages = uploadedImages.filter((img) => img !== file);
-            updateSubmitButton();
+            // updateSubmitButton();
           });
 
-        updateSubmitButton();
+        // updateSubmitButton();
       };
       reader.readAsDataURL(file);
     });
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     formValidation[fieldName] = isValid;
     updateFormStatus(element, isValid);
-    updateSubmitButton();
+    // updateSubmitButton();
   }
 
   function updateFormStatus(element, isValid) {
@@ -160,12 +160,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function updateSubmitButton() {
-    const isFormValid =
-      Object.values(formValidation).every((v) => v === true) &&
-      uploadedImages.length > 0;
-    submitButton.disabled = !isFormValid;
-  }
+  // function updateSubmitButton() {
+  //   const isFormValid =
+  //     Object.values(formValidation).every((v) => v === true) &&
+  //     uploadedImages.length > 0;
+  //   submitButton.disabled = !isFormValid;
+  // }
 
   if (DismissBtn) {
     DismissBtn.addEventListener("click", function () {
@@ -208,10 +208,10 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    if (!Object.values(formValidation).every((v) => v === true)) {
-      alert("Please complete all required fields correctly.");
-      return;
-    }
+    // if (!Object.values(formValidation).every((v) => v === true)) {
+    //   alert("Please complete all required fields correctly.");
+    //   return;
+    // }
 
     // Create report object
     const report = {
@@ -258,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
       formValidation[key] = false;
     });
 
-    submitButton.disabled = true;
+    // submitButton.disabled = true;
   };
 
   function showError(message) {

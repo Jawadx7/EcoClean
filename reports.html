@@ -7,64 +7,173 @@
     <link rel="stylesheet" href="reports-styles.css" />
   </head>
   <body>
-    <h1>Reported Waste Sites</h1>
+    <header>
+      <p>Reported Waste Sites</p>
+      <a href="index.html">Go Back Home</a>
+    </header>
+
+    <!-- Filters -->
+    <div class="filters">
+      <select id="urgencyFilter">
+        <option value="">All Urgencies</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+
+      <select id="locationFilter">
+        <option value="">All Locations</option>
+      </select>
+    </div>
+
     <div id="reports-container">
       <p>Loading reports...</p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <button id="prevPage">Prev</button>
+      <span id="pageIndicator"></span>
+      <button id="nextPage">Next</button>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox-overlay" style="display: none">
+      <img id="lightbox-img" src="" alt="Full View" />
     </div>
 
     <script type="module">
       import { getAllReports } from "./db.js";
 
-      document.addEventListener("DOMContentLoaded", async () => {
-        const reportsContainer = document.getElementById("reports-container");
+      let allReports = [];
+      let currentPage = 1;
+      const perPage = 6;
 
-        try {
-          const reports = await getAllReports();
+      const reportsContainer = document.getElementById("reports-container");
+      const urgencyFilter = document.getElementById("urgencyFilter");
+      const locationFilter = document.getElementById("locationFilter");
+      const prevPage = document.getElementById("prevPage");
+      const nextPage = document.getElementById("nextPage");
+      const pageIndicator = document.getElementById("pageIndicator");
 
-          console.log(reports);
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
 
-          if (reports.length === 0) {
-            reportsContainer.innerHTML = "<p>No reports available.</p>";
-          } else {
-            reportsContainer.innerHTML = ""; // Clear the loading message
+      const renderReports = () => {
+        const urgency = urgencyFilter.value;
+        const location = locationFilter.value;
 
-            reports.forEach((report) => {
-              const reportDiv = document.createElement("div");
-              reportDiv.classList.add("report");
+        const filtered = allReports.filter((report) => {
+          return (
+            (urgency === "" || report.urgency === urgency) &&
+            (location === "" || report.location === location)
+          );
+        });
 
-              // Add details of each report
-              reportDiv.innerHTML = `
-              <h3>${report.location}</h3>
-              <p><strong>Description:</strong> ${report.description}</p>
-              <p><strong>Waste Type:</strong> ${report.wasteType.join(", ")}</p>
-              <p><strong>Urgency:</strong> ${report.urgency}</p>
-              <p><strong>Reported On:</strong> ${new Date(
-                report.timestamp
-              ).toLocaleString()}</p>
-              <p><strong>Contact:</strong> ${
-                report.anonymous
-                  ? "Anonymous"
-                  : `${report.contact.email}, ${report.contact.phone}`
-              }</p>
-              <div>
-                <strong>Images:</strong>
-                <div class="images-container">
-                  ${report.images
-                    .map(
-                      (img) =>
-                        `<img src="${img}" alt="Report Image" class="report-image" />`
-                    )
-                    .join("")}
-                </div>
+        const totalPages = Math.ceil(filtered.length / perPage);
+        currentPage = Math.min(currentPage, totalPages || 1);
+
+        const start = (currentPage - 1) * perPage;
+        const reportsToShow = filtered.slice(start, start + perPage);
+
+        reportsContainer.innerHTML = "";
+
+        if (reportsToShow.length === 0) {
+          reportsContainer.innerHTML = "<p>No reports found.</p>";
+          return;
+        }
+
+        reportsToShow.forEach((report) => {
+          const reportDiv = document.createElement("div");
+          reportDiv.classList.add("report");
+
+          const contactInfo = report.anonymous
+            ? "Anonymous"
+            : `${report.contact.email}, ${report.contact.phone}`;
+
+          reportDiv.innerHTML = `
+            <h3>${report.location}</h3>
+            <p><strong>Description:</strong> ${report.description}</p>
+            <p><strong>Waste Type:</strong> ${report.wasteType.join(", ")}</p>
+            <p><strong>Urgency:</strong> ${report.urgency}</p>
+            <p><strong>Reported On:</strong> ${new Date(
+              report.timestamp
+            ).toLocaleString()}</p>
+            <p><strong>Contact:</strong> ${contactInfo}</p>
+            <div>
+              <strong>Images:</strong>
+              <div class="images-container">
+                ${report.images
+                  .map(
+                    (img) => `
+                  <img src="${img}" alt="Report Image" class="report-image" />
+                `
+                  )
+                  .join("")}
               </div>
-            `;
+            </div>
+          `;
 
-              reportsContainer.appendChild(reportDiv);
-            });
-          }
+          reportsContainer.appendChild(reportDiv);
+        });
+
+        // Pagination update
+        pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+        prevPage.disabled = currentPage === 1;
+        nextPage.disabled = currentPage === totalPages;
+      };
+
+      const updateLocationOptions = () => {
+        const locations = [...new Set(allReports.map((r) => r.location))];
+        locationFilter.innerHTML = `<option value="">All Locations</option>`;
+        locations.forEach((loc) => {
+          const option = document.createElement("option");
+          option.value = loc;
+          option.textContent = loc;
+          locationFilter.appendChild(option);
+        });
+      };
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          allReports = await getAllReports();
+          updateLocationOptions();
+          renderReports();
         } catch (err) {
           console.error("Error fetching reports:", err);
           reportsContainer.innerHTML = "<p>Failed to load reports.</p>";
+        }
+      });
+
+      urgencyFilter.addEventListener("change", () => {
+        currentPage = 1;
+        renderReports();
+      });
+
+      locationFilter.addEventListener("change", () => {
+        currentPage = 1;
+        renderReports();
+      });
+
+      prevPage.addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          renderReports();
+        }
+      });
+
+      nextPage.addEventListener("click", () => {
+        currentPage++;
+        renderReports();
+      });
+
+      // Lightbox handler
+      document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("report-image")) {
+          lightboxImg.src = e.target.src;
+          lightbox.style.display = "flex";
+        } else if (e.target === lightbox || e.target === lightboxImg) {
+          lightbox.style.display = "none";
         }
       });
     </script>
