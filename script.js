@@ -1,3 +1,5 @@
+import { saveReport } from "./db.js";
+
 document.addEventListener("DOMContentLoaded", function () {
   // ======= Mobile Navigation Toggle =======
   const hamburger = document.querySelector(".hamburger");
@@ -203,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
     validateField("contact", document.getElementById("email"));
   });
 
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     if (!Object.values(formValidation).every((v) => v === true)) {
@@ -211,9 +213,41 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    confirmationMessage.classList.remove("hidden");
-    resetForm();
+    // Create report object
+    const report = {
+      location: document.getElementById("location").value.trim(),
+      description: document.getElementById("description").value.trim(),
+      wasteType: Array.from(
+        document.querySelectorAll('input[name="wasteType"]:checked')
+      ).map((el) => el.value),
+      urgency:
+        document.querySelector('input[name="urgency"]:checked')?.value || "",
+      anonymous: anonymousCheckbox.checked,
+      contact: {
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+      },
+      images: await Promise.all(uploadedImages.map(readFileAsDataURL)),
+    };
+
+    try {
+      await saveReport(report);
+      confirmationMessage.classList.remove("hidden");
+      resetForm();
+    } catch (err) {
+      console.error("Error saving report:", err);
+      alert("Failed to save report.");
+    }
   });
+
+  // Helper to read file as base64
+  function readFileAsDataURL(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.readAsDataURL(file);
+    });
+  }
 
   window.resetForm = function () {
     form.reset();
